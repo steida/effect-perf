@@ -30,20 +30,20 @@ export default function Page() {
 
     const times: number[] = [];
     const measureRun = () => {
-      const s = performance.now();
-      // +- few millis, tested on M1
+      // Hitting JIT makes a huge difference.
+      // runtime.runFork(program);
 
-      // 0.25
-      runtime.runFork(program);
-      // 0.29
+      // +- few millis, tested on M1
+      const s = performance.now();
+
+      // 0.27 vs 0.05
+      // runtime.runFork(program);
+      // 0.29 vs 0.05
       // runtime.runCallback(program);
-      // 0.34
-      // runtime.runPromise(program);
+      // 0.34 vs 0.1
+      runtime.runPromise(program);
       times.push(performance.now() - s);
     };
-
-    // Hit JIT
-    measureRun();
 
     const timer = setInterval(() => {
       if (++count > 100) {
@@ -53,7 +53,7 @@ export default function Page() {
         return;
       }
       measureRun();
-    }, 100);
+    }, 50);
   }, []);
   return <h1>Hello, Next.js!</h1>;
 }
